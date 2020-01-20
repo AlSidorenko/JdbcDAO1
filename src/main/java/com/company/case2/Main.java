@@ -10,9 +10,9 @@ import java.util.Scanner;
 
 public class Main {
     static final String DB_CONNECTION =
-            "jdbc:mysql://localhost:3306/mydb?serverTimezone=Europe/Kiev";
-    static final String DB_USER = "root";
-    static final String DB_PASSWORD = "password";
+            "jdbc:mysql://localhost:3306/prog_db.jdbcdao1?serverTimezone=Europe/Kiev";
+    static final String DB_USER = "admin";
+    static final String DB_PASSWORD = "admin";
 
     public static void main(String[] args) throws SQLException {
         Scanner sc = new Scanner(System.in);
