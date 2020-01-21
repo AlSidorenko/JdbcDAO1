@@ -3,12 +3,10 @@ package com.company.case2;
 import com.company.shared.Id;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public abstract class AbstractDAO<K, T> {
 
@@ -47,17 +45,40 @@ public abstract class AbstractDAO<K, T> {
         }
     }
 
-    // TODO
-    public void update(T t) {
+    // TODO - method update().
+    public void update(T t) throws SQLException {
 
+        try {
+            Field[] fields = t.getClass().getDeclaredFields();
+            Field id = null;
 
+            StringBuilder names = new StringBuilder();
+
+            for (Field f : fields) {
+                names.append(f.getName()).append(',');
+                if (f.isAnnotationPresent(Id.class)) {
+                    id = f;
+                    id.setAccessible(true);
+                    break;
+                }
+            }
+            if (id == null)
+                throw new RuntimeException("No Id field");
+
+            String sql = "UPDATE " + table + "SET " + id.getName() +  " WHERE " + id.get(t);
+
+            try (Statement st = conn.createStatement()) {
+                st.execute(sql);
+            }
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public void delete(T t) {
         try {
             Field[] fields = t.getClass().getDeclaredFields();
             Field id = null;
-
             for (Field f : fields) {
                 if (f.isAnnotationPresent(Id.class)) {
                     id = f;
